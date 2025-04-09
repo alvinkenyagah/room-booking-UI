@@ -5,7 +5,7 @@ const BookingCard = ({ booking, onApprove, onReject, onCancel }) => {
           <div>
             <h3 className="text-lg font-semibold">{booking.room?.name || 'Unknown Room'}</h3>
             <p className="text-gray-600">
-              {new Date(booking.checkIn).toLocaleDateString()} to {new Date(booking.checkOut).toLocaleDateString()}
+            {new Date(booking.checkInDate).toLocaleDateString()} to {new Date(booking.checkOutDate).toLocaleDateString()}
             </p>
             <p className="text-gray-600">
               <span className="font-semibold">Guest:</span> {booking.user?.name || booking.guestEmail}
