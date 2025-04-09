@@ -11,7 +11,8 @@
 
 ## Bugs
 
-- User can't cancel booking once booked
+- User can't cancel booking once booked (fixed)
 - Room card shows rooms as unavailable even if it is available
-- Admin is unable to cancel or reject a booking request
+- Admin is unable to cancel or reject a booking request (fixed)
 - UI improvements required
+
