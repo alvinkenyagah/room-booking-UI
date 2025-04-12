@@ -11,7 +11,7 @@ const MyBookings = () => {
   const fetchBookings = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/bookings/user', {
+      const res = await fetch('https://room-booking-server-j6su.onrender.com/api/bookings/user', {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },

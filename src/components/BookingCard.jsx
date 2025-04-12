@@ -11,7 +11,7 @@ const BookingCard = ({ booking, isAdmin, onUpdate }) => {
     try {
       const user = JSON.parse(localStorage.getItem('user'));
   
-      const res = await fetch(`http://localhost:5000/api/bookings/cancel/${booking._id}`, {
+      const res = await fetch(`https://room-booking-server-j6su.onrender.com/api/bookings/cancel/${booking._id}`, {
         method: 'PUT', // Changed from DELETE to PUT
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -33,7 +33,7 @@ const BookingCard = ({ booking, isAdmin, onUpdate }) => {
     setIsLoading(true);
     try {
       const user = JSON.parse(localStorage.getItem('user'));
-      const res = await fetch(`http://localhost:5000/api/bookings/approve/${booking._id}`, {
+      const res = await fetch(`https://room-booking-server-j6su.onrender.com/api/bookings/approve/${booking._id}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${user.token}`,

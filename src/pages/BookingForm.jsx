@@ -32,7 +32,7 @@ const BookingForm = () => {
     const fetchRooms = async () => {
       try {
         setLoading(true);
-        const res = await fetch('http://localhost:5000/api/rooms', {
+        const res = await fetch('https://room-booking-server-j6su.onrender.com/api/rooms', {
           headers: {
             Authorization: `Bearer ${user?.token}`
           }
@@ -74,7 +74,7 @@ const BookingForm = () => {
     setSubmitStatus({ loading: true, error: null, success: false });
 
     try {
-      const res = await fetch('http://localhost:5000/api/bookings', {
+      const res = await fetch('https://room-booking-server-j6su.onrender.com/api/bookings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

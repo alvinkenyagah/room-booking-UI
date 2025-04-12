@@ -5,7 +5,7 @@ const HomePage = () => {
   const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/rooms')
+    fetch('https://room-booking-server-j6su.onrender.com/api/rooms')
       .then(res => res.json())
       .then(data => setRooms(data))
       .catch(err => console.error(err));
