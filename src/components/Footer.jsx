@@ -112,9 +112,9 @@ const Footer = () => {
         
         {/* Newsletter subscription - optional */}
         <div className="mt-8 border-t border-gray-200 pt-8">
-          <h3 className="text-sm font-semibold text-gray-900 tracking-wider uppercase">
+          {/* <h3 className="text-sm font-semibold text-gray-900 tracking-wider uppercase">
             Subscribe to our newsletter
-          </h3>
+          </h3> */}
           {/* <p className="mt-2 text-base text-gray-600">
             Get the latest news and updates directly to your inbox.
           </p>
