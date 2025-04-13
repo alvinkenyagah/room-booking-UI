@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 const BookingForm = () => {
   const [rooms, setRooms] = useState([]);
@@ -132,6 +133,7 @@ const BookingForm = () => {
   }
 
   return (
+    <>
     <div className="p-6 max-w-lg mx-auto">
       <h2 className="text-2xl font-semibold mb-4">Book a Room</h2>
       
@@ -211,6 +213,8 @@ const BookingForm = () => {
         )}
       </form>
     </div>
+    <Footer/>
+    </>
   );
 };
 
