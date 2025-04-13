@@ -64,7 +64,7 @@ const RoomTable = ({ rooms, onEdit, onDelete }) => {
       </div>
       
       {/* Mobile-friendly card view that appears on small screens */}
-      <div className="sm:hidden">
+      {/* <div className="sm:hidden">
         {rooms.length === 0 ? (
           <div className="text-center py-4 text-gray-500">
             No rooms found. Add a new room to get started.
@@ -100,7 +100,7 @@ const RoomTable = ({ rooms, onEdit, onDelete }) => {
             ))}
           </div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };
