@@ -213,7 +213,6 @@ const BookingForm = () => {
         )}
       </form>
     </div>
-    <Footer/>
     </>
   );
 };
