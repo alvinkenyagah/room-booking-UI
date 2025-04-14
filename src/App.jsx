@@ -5,7 +5,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer'; // Import the Footer component
 import Login from './pages/LoginPage';
 import Register from './pages/RegisterPage';
-import Home from './pages/HomePage';
+import Home from './pages/homepage/HomePage';
 import MyBookings from './pages/MyBookings';
 import BookingForm from './pages/BookingForm';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -38,14 +38,6 @@ function App() {
               <Route path="/register" element={<Register />} />
               
               {/* Protected routes */}
-              <Route 
-                path="/book" 
-                element={
-                  <ProtectedRoute>
-                    <BookingForm />
-                  </ProtectedRoute>
-                } 
-              />
               <Route 
                 path="/my-bookings" 
                 element={

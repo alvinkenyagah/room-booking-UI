@@ -86,14 +86,6 @@ const Navbar = () => {
                   <Calendar size={18} className="mr-1" />
                   <span>My Bookings</span>
                 </Link>
-                <Link to="/book" className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive('/book') 
-                    ? (isScrolled ? 'bg-blue-100 text-blue-700' : 'bg-blue-700 text-white') 
-                    : (isScrolled ? 'hover:bg-gray-100' : 'hover:bg-blue-700')
-                }`}>
-                  <BookOpen size={18} className="mr-1" />
-                  <span>Book a Room</span>
-                </Link>
                 {user.isAdmin && (
                   <Link to="/admin/dashboard" className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     isActive('/admin/dashboard') 
@@ -175,14 +167,6 @@ const Navbar = () => {
                 }`}>
                   <Calendar size={18} className="mr-2" />
                   <span>My Bookings</span>
-                </Link>
-                <Link to="/book" className={`flex items-center px-3 py-2 rounded-md text-base font-medium ${
-                  isActive('/book') 
-                    ? (isScrolled ? 'bg-blue-100 text-blue-700' : 'bg-blue-700 text-white') 
-                    : (isScrolled ? 'text-gray-800 hover:bg-gray-100' : 'text-white hover:bg-blue-700')
-                }`}>
-                  <BookOpen size={18} className="mr-2" />
-                  <span>Book a Room</span>
                 </Link>
                 {user.isAdmin && (
                   <Link to="/admin/dashboard" className={`flex items-center px-3 py-2 rounded-md text-base font-medium ${

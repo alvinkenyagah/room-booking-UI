@@ -6,17 +6,19 @@ const RoomTable = ({ rooms, onEdit, onDelete }) => {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room Type</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bed Type</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Floor</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Images</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {rooms.length === 0 ? (
               <tr>
-                <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
+                <td colSpan="8" className="px-6 py-4 text-center text-gray-500">
                   No rooms found. Add a new room to get started.
                 </td>
               </tr>
@@ -25,9 +27,21 @@ const RoomTable = ({ rooms, onEdit, onDelete }) => {
                 <tr key={room._id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">{room.name}</div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {room.images.length} {room.images.length === 1 ? 'image' : 'images'}
+                    </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-gray-500 truncate max-w-xs">{room.description}</div>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{room.roomType}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{room.capacity} {room.capacity === 1 ? 'guest' : 'guests'}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{room.bedType}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{room.floorLevel}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">${room.price}</div>
@@ -36,9 +50,6 @@ const RoomTable = ({ rooms, onEdit, onDelete }) => {
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${room.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                       {room.available ? 'Available' : 'Unavailable'}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {room.images.length} images
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2">
@@ -64,7 +75,7 @@ const RoomTable = ({ rooms, onEdit, onDelete }) => {
       </div>
       
       {/* Mobile-friendly card view that appears on small screens */}
-      {/* <div className="sm:hidden">
+      <div className="sm:hidden">
         {rooms.length === 0 ? (
           <div className="text-center py-4 text-gray-500">
             No rooms found. Add a new room to get started.
@@ -79,9 +90,38 @@ const RoomTable = ({ rooms, onEdit, onDelete }) => {
                     {room.available ? 'Available' : 'Unavailable'}
                   </span>
                 </div>
-                <div className="mt-2 text-sm text-gray-500">{room.description}</div>
-                <div className="mt-2 text-sm text-gray-900">${room.price}</div>
-                <div className="mt-2 text-sm text-gray-500">{room.images.length} images</div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                    {room.roomType}
+                  </span>
+                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                    {room.capacity} {room.capacity === 1 ? 'guest' : 'guests'}
+                  </span>
+                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                    {room.bedType}
+                  </span>
+                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                    {room.floorLevel}
+                  </span>
+                </div>
+                <div className="mt-2 text-sm text-gray-500 line-clamp-2">{room.description}</div>
+                <div className="mt-2 text-sm text-gray-900 font-medium">${room.price}</div>
+                <div className="mt-2 text-xs text-gray-500">
+                  <div>{room.images.length} {room.images.length === 1 ? 'image' : 'images'}</div>
+                  <div className="mt-1">
+                    {room.amenities && room.amenities.length > 0 ? (
+                      <div className="flex flex-wrap gap-1">
+                        {room.amenities.map((amenity, index) => (
+                          <span key={index} className="text-xs bg-gray-100 px-2 py-1 rounded">
+                            {amenity}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      "No amenities listed"
+                    )}
+                  </div>
+                </div>
                 <div className="mt-3 flex space-x-3">
                   <button
                     onClick={() => onEdit(room)}
@@ -100,7 +140,7 @@ const RoomTable = ({ rooms, onEdit, onDelete }) => {
             ))}
           </div>
         )}
-      </div> */}
+      </div>
     </div>
   );
 };

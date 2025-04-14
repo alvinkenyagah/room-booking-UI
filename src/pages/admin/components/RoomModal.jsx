@@ -7,7 +7,12 @@ const RoomModal = ({ isOpen, onClose, onSave, isEditing, room, userToken }) => {
     description: '',
     price: '',
     available: true,
-    images: ['']
+    images: [''],
+    roomType: 'Single',
+    capacity: 1,
+    amenities: [''],
+    floorLevel: '',
+    bedType: 'King'
   });
   
   useEffect(() => {
@@ -17,7 +22,12 @@ const RoomModal = ({ isOpen, onClose, onSave, isEditing, room, userToken }) => {
         description: room.description,
         price: room.price,
         available: room.available,
-        images: room.images.length > 0 ? room.images : ['']
+        images: room.images.length > 0 ? room.images : [''],
+        roomType: room.roomType || 'Single',
+        capacity: room.capacity || 1,
+        amenities: room.amenities?.length > 0 ? room.amenities : [''],
+        floorLevel: room.floorLevel || '',
+        bedType: room.bedType || 'King'
       });
     }
   }, [isEditing, room]);
@@ -45,6 +55,21 @@ const RoomModal = ({ isOpen, onClose, onSave, isEditing, room, userToken }) => {
     setFormData({ ...formData, images: updatedImages });
   };
   
+  const handleAmenityChange = (index, value) => {
+    const updatedAmenities = [...formData.amenities];
+    updatedAmenities[index] = value;
+    setFormData({ ...formData, amenities: updatedAmenities });
+  };
+  
+  const addAmenityField = () => {
+    setFormData({ ...formData, amenities: [...formData.amenities, ''] });
+  };
+  
+  const removeAmenityField = (index) => {
+    const updatedAmenities = formData.amenities.filter((_, i) => i !== index);
+    setFormData({ ...formData, amenities: updatedAmenities });
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -53,7 +78,12 @@ const RoomModal = ({ isOpen, onClose, onSave, isEditing, room, userToken }) => {
       description: formData.description,
       price: Number(formData.price),
       available: formData.available,
-      images: formData.images.filter(img => img.trim() !== '')
+      images: formData.images.filter(img => img.trim() !== ''),
+      roomType: formData.roomType,
+      capacity: Number(formData.capacity),
+      amenities: formData.amenities.filter(amenity => amenity.trim() !== ''),
+      floorLevel: formData.floorLevel,
+      bedType: formData.bedType
     };
     
     try {
@@ -116,18 +146,91 @@ const RoomModal = ({ isOpen, onClose, onSave, isEditing, room, userToken }) => {
             />
           </div>
           
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="price">
+                Price per Night ($)
+              </label>
+              <input
+                id="price"
+                name="price"
+                type="number"
+                min="0"
+                step="0.01"
+                value={formData.price}
+                onChange={handleChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                required
+              />
+            </div>
+            
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="roomType">
+                Room Type
+              </label>
+              <select
+                id="roomType"
+                name="roomType"
+                value={formData.roomType}
+                onChange={handleChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                required
+              >
+                <option value="Single">Single</option>
+                <option value="Double">Double</option>
+                <option value="Suite">Suite</option>
+              </select>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="capacity">
+                Capacity (Guests)
+              </label>
+              <input
+                id="capacity"
+                name="capacity"
+                type="number"
+                min="1"
+                value={formData.capacity}
+                onChange={handleChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                required
+              />
+            </div>
+            
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bedType">
+                Bed Type
+              </label>
+              <select
+                id="bedType"
+                name="bedType"
+                value={formData.bedType}
+                onChange={handleChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                required
+              >
+                <option value="King">King</option>
+                <option value="Queen">Queen</option>
+                <option value="Twin">Twin</option>
+                <option value="Sofa Bed">Sofa Bed</option>
+              </select>
+            </div>
+          </div>
+          
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="price">
-              Price per Night ($)
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="floorLevel">
+              Floor Level
             </label>
             <input
-              id="price"
-              name="price"
-              type="number"
-              min="0"
-              step="0.01"
-              value={formData.price}
+              id="floorLevel"
+              name="floorLevel"
+              type="text"
+              value={formData.floorLevel}
               onChange={handleChange}
+              placeholder="e.g. 1st floor, 2nd floor"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
               required
             />
@@ -151,7 +254,7 @@ const RoomModal = ({ isOpen, onClose, onSave, isEditing, room, userToken }) => {
               Images
             </label>
             {formData.images.map((image, index) => (
-              <div key={index} className="flex mb-2">
+              <div key={`image-${index}`} className="flex mb-2">
                 <input
                   type="text"
                   value={image}
@@ -175,6 +278,38 @@ const RoomModal = ({ isOpen, onClose, onSave, isEditing, room, userToken }) => {
               className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded mt-2"
             >
               Add Image URL
+            </button>
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Amenities
+            </label>
+            {formData.amenities.map((amenity, index) => (
+              <div key={`amenity-${index}`} className="flex mb-2">
+                <input
+                  type="text"
+                  value={amenity}
+                  onChange={(e) => handleAmenityChange(index, e.target.value)}
+                  placeholder="e.g. Wi-Fi, TV, Air Conditioning"
+                  className="shadow appearance-none border rounded flex-1 py-2 px-3 text-gray-700 mr-2"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeAmenityField(index)}
+                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                  disabled={formData.amenities.length === 1}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addAmenityField}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded mt-2"
+            >
+              Add Amenity
             </button>
           </div>
           
