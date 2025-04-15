@@ -65,9 +65,7 @@ const HomePage = () => {
       const userObj = userStr ? JSON.parse(userStr) : null;
       const token = userObj?.token;
       
-      console.log("User object:", userObj);
-      console.log("Token:", token);
-      
+    
       if (!token) {
         throw new Error('You must be logged in to calculate booking cost');
       }
