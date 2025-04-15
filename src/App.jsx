@@ -7,7 +7,6 @@ import Login from './pages/LoginPage';
 import Register from './pages/RegisterPage';
 import Home from './pages/homepage/HomePage';
 import MyBookings from './pages/MyBookings';
-import BookingForm from './pages/BookingForm';
 import AdminDashboard from './pages/admin/AdminDashboard';
 
 // Protected route component

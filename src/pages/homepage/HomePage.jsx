@@ -60,10 +60,23 @@ const HomePage = () => {
     setError(null);
     
     try {
+      // Get the user object from localStorage
+      const userStr = localStorage.getItem('user');
+      const userObj = userStr ? JSON.parse(userStr) : null;
+      const token = userObj?.token;
+      
+      console.log("User object:", userObj);
+      console.log("Token:", token);
+      
+      if (!token) {
+        throw new Error('You must be logged in to calculate booking cost');
+      }
+      
       const response = await fetch('https://room-booking-server-j6su.onrender.com/api/bookings/calculate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           roomId: selectedRoom._id,
@@ -93,8 +106,10 @@ const HomePage = () => {
     setError(null);
     
     try {
-      // Get the auth token from localStorage (assuming you store it there)
-      const token = localStorage.getItem('token');
+      // Get the token from the user object in localStorage
+      const userStr = localStorage.getItem('user');
+      const userObj = userStr ? JSON.parse(userStr) : null;
+      const token = userObj?.token;
       
       if (!token) {
         throw new Error('You must be logged in to make a booking');
