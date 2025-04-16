@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { format } from 'date-fns'; // You'll need to install this package
+import { format } from 'date-fns';
 
 const HomePage = () => {
+  // Existing state variables
   const [rooms, setRooms] = useState([]);
   const [filters, setFilters] = useState({
     roomType: '',
@@ -22,6 +23,20 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  
+  // Add state for filter visibility
+  const [showFilters, setShowFilters] = useState(false);
+  // Add state for active filters count
+  const [activeFilterCount, setActiveFilterCount] = useState(0);
+
+  // Calculate active filter count
+  useEffect(() => {
+    let count = 0;
+    Object.values(filters).forEach(value => {
+      if (value !== '') count++;
+    });
+    setActiveFilterCount(count);
+  }, [filters]);
 
   useEffect(() => {
     fetch('https://room-booking-server-j6su.onrender.com/api/rooms')
@@ -30,10 +45,10 @@ const HomePage = () => {
       .catch(err => console.error(err));
   }, []);
 
+  // Existing functions...
   const handleBookingOpen = (room) => {
     setSelectedRoom(room);
     setShowBookingModal(true);
-    // Reset booking state
     setBookingCost(null);
     setError(null);
     setBookingSuccess(false);
@@ -65,7 +80,6 @@ const HomePage = () => {
       const userObj = userStr ? JSON.parse(userStr) : null;
       const token = userObj?.token;
       
-    
       if (!token) {
         throw new Error('You must be logged in to calculate booking cost');
       }
@@ -159,6 +173,17 @@ const HomePage = () => {
       ...prev,
       [name]: value
     }));
+  };
+
+  // Clear all filters function
+  const clearAllFilters = () => {
+    setFilters({
+      roomType: '',
+      bedType: '',
+      floorLevel: '',
+      minPrice: '',
+      maxPrice: '',
+    });
   };
 
   const filteredRooms = rooms.filter(room => {
@@ -460,94 +485,212 @@ const HomePage = () => {
   const uniqueFloorLevels = [...new Set(rooms.map(room => room.floorLevel))];
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Available Rooms</h1>
+    <div className="p-4 md:p-6">
+      <h1 className="text-2xl font-bold mb-4">Available Rooms</h1>
+      
+      {/* Filter toggle button with active filter count */}
+      <div className="mb-4">
+        <button 
+          onClick={() => setShowFilters(!showFilters)}
+          className="flex items-center justify-between w-full md:w-auto px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 transition-colors"
+        >
+          <div className="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            <span className="font-medium">Filters</span>
+            {activeFilterCount > 0 && (
+              <span className="ml-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full">
+                {activeFilterCount}
+              </span>
+            )}
+          </div>
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            className={`h-5 w-5 ml-2 transition-transform ${showFilters ? 'rotate-180' : ''}`} 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
       
       {/* Filters section */}
-      <div className="bg-gray-50 p-4 rounded-lg mb-6">
-        <h2 className="text-lg font-medium mb-3">Filter Rooms</h2>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Room Type</label>
-            <select 
-              name="roomType" 
-              value={filters.roomType} 
-              onChange={handleFilterChange}
-              className="w-full border border-gray-300 rounded-md p-2"
-            >
-              <option value="">Any Type</option>
-              {uniqueRoomTypes.map(type => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
+      <div className={`transition-all duration-300 ease-in-out overflow-hidden ${showFilters ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+        <div className="bg-gray-50 p-4 rounded-lg mb-6">
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-lg font-medium">Filter Rooms</h2>
+            {/* Clear all filters button */}
+            {activeFilterCount > 0 && (
+              <button 
+                onClick={clearAllFilters}
+                className="text-sm text-blue-600 hover:text-blue-800"
+              >
+                Clear all
+              </button>
+            )}
           </div>
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Bed Type</label>
-            <select 
-              name="bedType" 
-              value={filters.bedType} 
-              onChange={handleFilterChange}
-              className="w-full border border-gray-300 rounded-md p-2"
-            >
-              <option value="">Any Bed</option>
-              {uniqueBedTypes.map(type => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Floor Level</label>
-            <select 
-              name="floorLevel" 
-              value={filters.floorLevel} 
-              onChange={handleFilterChange}
-              className="w-full border border-gray-300 rounded-md p-2"
-            >
-              <option value="">Any Floor</option>
-              {uniqueFloorLevels.map(floor => (
-                <option key={floor} value={floor}>{floor}</option>
-              ))}
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Min Price</label>
-            <input 
-              type="number" 
-              name="minPrice" 
-              value={filters.minPrice} 
-              onChange={handleFilterChange}
-              className="w-full border border-gray-300 rounded-md p-2"
-              placeholder="Min $"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Max Price</label>
-            <input 
-              type="number" 
-              name="maxPrice" 
-              value={filters.maxPrice} 
-              onChange={handleFilterChange}
-              className="w-full border border-gray-300 rounded-md p-2"
-              placeholder="Max $"
-            />
+          {/* Mobile-friendly stacked layout */}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Room Type</label>
+              <select 
+                name="roomType" 
+                value={filters.roomType} 
+                onChange={handleFilterChange}
+                className="w-full border border-gray-300 rounded-md p-2"
+              >
+                <option value="">Any Type</option>
+                {uniqueRoomTypes.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Bed Type</label>
+              <select 
+                name="bedType" 
+                value={filters.bedType} 
+                onChange={handleFilterChange}
+                className="w-full border border-gray-300 rounded-md p-2"
+              >
+                <option value="">Any Bed</option>
+                {uniqueBedTypes.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Floor Level</label>
+              <select 
+                name="floorLevel" 
+                value={filters.floorLevel} 
+                onChange={handleFilterChange}
+                className="w-full border border-gray-300 rounded-md p-2"
+              >
+                <option value="">Any Floor</option>
+                {uniqueFloorLevels.map(floor => (
+                  <option key={floor} value={floor}>{floor}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Min Price</label>
+                <input 
+                  type="number" 
+                  name="minPrice" 
+                  value={filters.minPrice} 
+                  onChange={handleFilterChange}
+                  className="w-full border border-gray-300 rounded-md p-2"
+                  placeholder="Min $"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Max Price</label>
+                <input 
+                  type="number" 
+                  name="maxPrice" 
+                  value={filters.maxPrice} 
+                  onChange={handleFilterChange}
+                  className="w-full border border-gray-300 rounded-md p-2"
+                  placeholder="Max $"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
       
-      {/* Room cards */}
+      {/* Active filters display */}
+      {activeFilterCount > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          {filters.roomType && (
+            <div className="flex items-center bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">
+              <span>Room: {filters.roomType}</span>
+              <button 
+                onClick={() => setFilters(prev => ({ ...prev, roomType: '' }))}
+                className="ml-1 text-blue-800 hover:text-blue-600"
+              >
+                ×
+              </button>
+            </div>
+          )}
+          {filters.bedType && (
+            <div className="flex items-center bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-sm">
+              <span>Bed: {filters.bedType}</span>
+              <button 
+                onClick={() => setFilters(prev => ({ ...prev, bedType: '' }))}
+                className="ml-1 text-purple-800 hover:text-purple-600"
+              >
+                ×
+              </button>
+            </div>
+          )}
+          {filters.floorLevel && (
+            <div className="flex items-center bg-amber-100 text-amber-800 px-2 py-1 rounded-full text-sm">
+              <span>Floor: {filters.floorLevel}</span>
+              <button 
+                onClick={() => setFilters(prev => ({ ...prev, floorLevel: '' }))}
+                className="ml-1 text-amber-800 hover:text-amber-600"
+              >
+                ×
+              </button>
+            </div>
+          )}
+          {filters.minPrice && (
+            <div className="flex items-center bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">
+              <span>Min: ${filters.minPrice}</span>
+              <button 
+                onClick={() => setFilters(prev => ({ ...prev, minPrice: '' }))}
+                className="ml-1 text-green-800 hover:text-green-600"
+              >
+                ×
+              </button>
+            </div>
+          )}
+          {filters.maxPrice && (
+            <div className="flex items-center bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm">
+              <span>Max: ${filters.maxPrice}</span>
+              <button 
+                onClick={() => setFilters(prev => ({ ...prev, maxPrice: '' }))}
+                className="ml-1 text-red-800 hover:text-red-600"
+              >
+                ×
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+      
+      {/* Results counter */}
+      <div className="mb-4 text-sm text-gray-500">
+        Showing {filteredRooms.length} {filteredRooms.length === 1 ? 'room' : 'rooms'}
+      </div>
+      
+      {/* Room cards with mobile-friendly grid */}
       {filteredRooms.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {filteredRooms.map(room => 
             <RoomCard key={room._id} room={room} onBook={handleBookingOpen} />
           )}
         </div>
       ) : (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
+        <div className="text-center py-8 bg-gray-50 rounded-lg">
           <p className="text-gray-500">No rooms match your current filters.</p>
+          <button 
+            onClick={clearAllFilters}
+            className="mt-2 text-blue-600 hover:text-blue-800 font-medium"
+          >
+            Clear all filters
+          </button>
         </div>
       )}
       
