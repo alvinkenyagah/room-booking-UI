@@ -39,3 +39,7 @@ const BookingFilters = ({ filter, setFilter }) => {
   };
   
   export default BookingFilters;
+
+
+
+
